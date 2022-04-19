@@ -50,29 +50,27 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 
-				var replyMsg *linebot.TextMessage
-
 				switch message.Text {
 				case "author":
-					replyMsg = linebot.NewTextMessage("https://github.com/lohsuan")
+					replyMsg := linebot.NewTextMessage("Author: Yu-Hsuan, Lo (Erin)$\nGithub: https://github.com/lohsuan").AddEmoji(
+						linebot.NewEmoji(28, "5ac1bfd5040ab15980c9b435", "146"))
+
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
+						log.Print("err in linebot.TextMessage: ", err)
+					}
 
 				default:
-					replyMsg = linebot.NewTextMessage(
-						fmt.Sprintf("哈囉~ 我是你的小助理！\n 祝你有美好的一天!"))
-				}
+					replyMsg := linebot.NewTextMessage("小助理上線啦$\n祝你有美好的一天:)").AddEmoji(
+						linebot.NewEmoji(7, "5ac1bfd5040ab15980c9b435", "043"))
+					stickerMsg := linebot.NewStickerMessage("2", "514")
 
-				if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-					log.Print("err in linebot.TextMessage: ", err)
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
+						log.Print("err in linebot.TextMessage: ", err)
+					}
 				}
 
 			case *linebot.StickerMessage:
-				var kw string
-				for _, k := range message.Keywords {
-					kw = kw + "," + k
-				}
-
-				outStickerResult := fmt.Sprintf("收到貼圖訊息: %s, pkg: %s kw: %s  text: %s", message.StickerID, message.PackageID, kw, message.Text)
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(outStickerResult)).Do(); err != nil {
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewStickerMessage("2", "514")).Do(); err != nil {
 					log.Print("err in linebot.StickerMessage: ", err)
 				}
 			}
