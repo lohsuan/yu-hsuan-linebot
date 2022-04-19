@@ -52,16 +52,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 				switch message.Text {
 				case "author":
-					replyMsg := linebot.NewTextMessage("Author: Yu-Hsuan, Lo (Erin)$\nGithub: https://github.com/lohsuan").AddEmoji(
-						linebot.NewEmoji(28, "5ac1bfd5040ab15980c9b435", "146"))
+					replyMsg := linebot.NewTextMessage("Author: Yu-Hsuan, Lo (Erin)\nGithub: https://github.com/lohsuan")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
 				default:
-					replyMsg := linebot.NewTextMessage("小助理上線啦$\n祝你有美好的一天:)").AddEmoji(
-						linebot.NewEmoji(7, "5ac1bfd5040ab15980c9b435", "043"))
+					replyMsg := linebot.NewTextMessage("小助理上線啦，回覆 help 可取得更多功能\n祝你有美好的一天唷:)")
 					stickerMsg := linebot.NewStickerMessage("2", "514")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
