@@ -17,6 +17,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -51,15 +52,30 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			case *linebot.TextMessage:
 
 				switch message.Text {
+				case "help":
+					replyMsg := linebot.NewTextMessage("回覆:\nauthor -> 認識我！\njoke -> 生活太無聊，來點冷笑話xD\nepidemic -> 關注今日確診人數\nweather -> 今天天氣如何勒")
+
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
+						log.Print("err in linebot.TextMessage: ", err)
+					}
+
 				case "author":
-					replyMsg := linebot.NewTextMessage("Author: Yu-Hsuan, Lo (Erin)\nGithub: https://github.com/lohsuan")
+					replyMsg := linebot.NewTextMessage("很高興認識你/妳！我是現在就讀北科大 電資學士班 大三的羅羽軒(Erin)! 下面是我的 github 連結，請多多指教！")
+
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
+						log.Print("err in linebot.TextMessage: ", err)
+					}
+
+					time.Sleep(3 * time.Second)
+
+					replyMsg = linebot.NewTextMessage("https://github.com/lohsuan")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
 				default:
-					replyMsg := linebot.NewTextMessage("小助理上線啦，回覆 help 可取得更多功能\n祝你有美好的一天唷:)")
+					replyMsg := linebot.NewTextMessage("你的小助理上線啦，回覆 help 可檢視更多功能，祝你有美好的一天唷:)")
 					stickerMsg := linebot.NewStickerMessage("2", "514")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
@@ -71,6 +87,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewStickerMessage("2", "514")).Do(); err != nil {
 					log.Print("err in linebot.StickerMessage: ", err)
 				}
+
 			}
 		}
 	}
