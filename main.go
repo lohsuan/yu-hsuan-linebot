@@ -1,3 +1,15 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 import (
@@ -5,6 +17,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -12,21 +25,13 @@ import (
 var bot *linebot.Client
 
 func main() {
-	bot, err := linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
+	var err error
+	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
-
 	http.HandleFunc("/callback", callbackHandler)
-
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
-
 	http.ListenAndServe(addr, nil)
-}
-
-func EmojiMsg() linebot.SendingMessage {
-	return linebot.NewTextMessage(
-		fmt.Sprintf("哈囉~ 我是你的小助理！$\n 祝你有美好的一天!")).AddEmoji(
-		linebot.NewEmoji(12, "5ac1bfd5040ab15980c9b435", "043"))
 }
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,12 +49,20 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
-
+			// Handle only on text message
 			case *linebot.TextMessage:
-				if _, err = bot.ReplyMessage(event.ReplyToken, EmojiMsg()).Do(); err != nil {
+				// GetMessageQuota: Get how many remain free tier push message quota you still have this month. (maximum 500)
+				quota, err := bot.GetMessageQuota().Do()
+				if err != nil {
+					log.Println("Quota err:", err)
+				}
+				// message.ID: Msg unique ID
+				// message.Text: Msg text
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("msg ID:"+message.ID+":"+"Get:"+message.Text+" , \n OK! remain message:"+strconv.FormatInt(quota.Value, 10))).Do(); err != nil {
 					log.Print(err)
 				}
 
+			// Handle only on Sticker message
 			case *linebot.StickerMessage:
 				var kw string
 				for _, k := range message.Keywords {
