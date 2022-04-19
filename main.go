@@ -17,7 +17,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -49,20 +48,23 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
-			// Handle only on text message
 			case *linebot.TextMessage:
-				// GetMessageQuota: Get how many remain free tier push message quota you still have this month. (maximum 500)
-				quota, err := bot.GetMessageQuota().Do()
-				if err != nil {
-					log.Println("Quota err:", err)
-				}
-				// message.ID: Msg unique ID
-				// message.Text: Msg text
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("msg ID:"+message.ID+":"+"Get:"+message.Text+" , \n OK! remain message:"+strconv.FormatInt(quota.Value, 10))).Do(); err != nil {
-					log.Print(err)
+
+				var replyMsg *linebot.TextMessage
+
+				switch message.Text {
+				case "author":
+					replyMsg = linebot.NewTextMessage("https://github.com/lohsuan")
+
+				default:
+					replyMsg = linebot.NewTextMessage(
+						fmt.Sprintf("哈囉~ 我是你的小助理！\n 祝你有美好的一天!"))
 				}
 
-			// Handle only on Sticker message
+				if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
+					log.Print("err in linebot.TextMessage: ", err)
+				}
+
 			case *linebot.StickerMessage:
 				var kw string
 				for _, k := range message.Keywords {
@@ -71,7 +73,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 				outStickerResult := fmt.Sprintf("收到貼圖訊息: %s, pkg: %s kw: %s  text: %s", message.StickerID, message.PackageID, kw, message.Text)
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(outStickerResult)).Do(); err != nil {
-					log.Print(err)
+					log.Print("err in linebot.StickerMessage: ", err)
 				}
 			}
 		}
