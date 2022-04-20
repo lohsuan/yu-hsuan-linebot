@@ -33,128 +33,6 @@ func main() {
 	http.ListenAndServe(addr, nil)
 }
 
-func GetPersonalInfoFlex() *linebot.FlexMessage {
-	container, err := linebot.UnmarshalFlexMessageJSON([]byte(`{
-		"type": "bubble",
-		"hero": {
-		  "type": "image",
-		  "url": "https://i.imgur.com/ONo99SU.jpg",
-		  "size": "full",
-		  "aspectRatio": "20:13",
-		  "aspectMode": "cover",
-		  "action": {
-			"type": "message",
-			"label": "action",
-			"text": "hello!"
-		  }
-		},
-		"body": {
-		  "type": "box",
-		  "layout": "vertical",
-		  "contents": [
-			{
-			  "type": "text",
-			  "text": "羅羽軒 Erin",
-			  "weight": "bold",
-			  "size": "xl",
-			  "color": "#2E4057"
-			},
-			{
-			  "type": "box",
-			  "layout": "vertical",
-			  "margin": "lg",
-			  "spacing": "sm",
-			  "contents": [
-				{
-				  "type": "box",
-				  "layout": "baseline",
-				  "spacing": "sm",
-				  "contents": [
-					{
-					  "type": "text",
-					  "text": "School",
-					  "color": "#aaaaaa",
-					  "size": "sm",
-					  "flex": 1
-					},
-					{
-					  "type": "text",
-					  "text": "台北科技大學",
-					  "wrap": true,
-					  "color": "#666666",
-					  "size": "sm",
-					  "flex": 3
-					}
-				  ]
-				},
-				{
-				  "type": "box",
-				  "layout": "baseline",
-				  "spacing": "sm",
-				  "contents": [
-					{
-					  "type": "text",
-					  "text": "Dept.",
-					  "color": "#aaaaaa",
-					  "size": "sm",
-					  "flex": 1
-					},
-					{
-					  "type": "text",
-					  "text": "電資學士班 大三",
-					  "wrap": true,
-					  "color": "#666666",
-					  "size": "sm",
-					  "flex": 3
-					}
-				  ]
-				}
-			  ]
-			}
-		  ]
-		},
-		"footer": {
-		  "type": "box",
-		  "layout": "vertical",
-		  "spacing": "sm",
-		  "contents": [
-			{
-			  "type": "button",
-			  "style": "link",
-			  "height": "sm",
-			  "action": {
-				"type": "uri",
-				"label": "EMAIL",
-				"uri": "mailto:angelelo88362@gmail.com"
-			  }
-			},
-			{
-			  "type": "button",
-			  "style": "link",
-			  "height": "sm",
-			  "action": {
-				"type": "uri",
-				"label": "GITHUB",
-				"uri": "https://github.com/lohsuan"
-			  }
-			},
-			{
-			  "type": "box",
-			  "layout": "vertical",
-			  "contents": [],
-			  "margin": "sm"
-			}
-		  ],
-		  "flex": 0
-		}
-	  }`))
-	if err != nil {
-		panic(err)
-	}
-
-	return linebot.NewFlexMessage("我的基本資料", container)
-}
-
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	events, err := bot.ParseRequest(r)
 
@@ -189,10 +67,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 
 				case "weather", "今天天氣":
-					replyMsg := linebot.NewTextMessage("很高興認識你/妳！我是現在就讀北科大 電資學士班 大三的羅羽軒 Erin\n 下面是我的 github 連結，請多多指教！")
-					replyLink := linebot.NewTextMessage("https://github.com/lohsuan")
+					var locationName = ""
+					replyMsg := GetWeatherInfo(locationName)
 
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyLink).Do(); err != nil {
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
@@ -206,7 +84,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 				case "author", "認識作者":
 					replyMsg := linebot.NewTextMessage("初次見面，請多多指教！")
-					replyFlex := GetPersonalInfoFlex()
+					replyFlex := GetAuthorInfo()
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyFlex).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
