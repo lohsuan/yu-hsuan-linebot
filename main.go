@@ -17,8 +17,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
-	"github.com/deckarep/golang-set"
+
+	mapset "github.com/deckarep/golang-set"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -47,8 +47,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	const locationSet := mapset.NewSet("臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市", "基隆市", "新竹縣", "新竹市", "苗栗縣", "彰化縣", "南投縣", "雲林縣", "嘉義縣", "嘉義市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣")
-
+	locationSet := mapset.NewSet("臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市", "基隆市", "新竹縣", "新竹市", "苗栗縣", "彰化縣", "南投縣", "雲林縣", "嘉義縣", "嘉義市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣")
 
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
@@ -57,14 +56,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 				if message.Text[0] == '@' {
 					var locationName = message.Text[1:]
-					if !locationSet.Contains(locationName){
+					if !locationSet.Contains(locationName) {
 						replyMsg := linebot.NewTextMessage("抱歉，資料庫不夠強大，請輸入下方可查詢地區")
 						replyMsg2 := linebot.NewTextMessage("臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
-	
+
 						if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
 							log.Print("err in linebot.TextMessage: ", err)
 						}
-					}else {
+					} else {
 						replyMsg, replySticker := GetWeatherInfo(locationName)
 
 						if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do(); err != nil {
