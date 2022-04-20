@@ -10,357 +10,6 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
-const constFlexMessage string = `{
-    "type": "carousel",
-    "contents": [
-      {
-        "type": "bubble",
-        "size": "micro",
-        "body": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": "昨日新增",
-              "weight": "bold",
-              "size": "xl",
-              "margin": "md",
-              "color": "#00BB00"
-            },
-            {
-              "type": "separator",
-              "margin": "xs"
-            },
-            {
-              "type": "box",
-              "layout": "vertical",
-              "margin": "xxl",
-              "spacing": "sm",
-              "contents": [
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "確診",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "text": "LASTCASE",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end"
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "通報",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end",
-                      "text": "LASTINFORM"
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "排除",
-                      "size": "sm",
-                      "color": "#555555"
-                    },
-                    {
-                      "type": "text",
-                      "text": "LASTEXCEPT",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "separator",
-              "margin": "lg"
-            },
-            {
-              "type": "box",
-              "layout": "horizontal",
-              "margin": "md",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "Taiwan",
-                  "size": "xs",
-                  "color": "#aaaaaa",
-                  "flex": 0
-                }
-              ]
-            }
-          ]
-        },
-        "styles": {
-          "footer": {
-            "separator": true
-          }
-        }
-      },
-      {
-        "type": "bubble",
-        "size": "micro",
-        "body": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": "國內統計",
-              "weight": "bold",
-              "size": "xl",
-              "margin": "md",
-              "color": "#00AEAE"
-            },
-            {
-              "type": "separator",
-              "margin": "xs"
-            },
-            {
-              "type": "box",
-              "layout": "vertical",
-              "margin": "xxl",
-              "spacing": "sm",
-              "contents": [
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "確診",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "text": "CASE",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end"
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "通報",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end",
-                      "text": "INFORM"
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "死亡",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "text": "DEATH",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "separator",
-              "margin": "lg"
-            },
-            {
-              "type": "box",
-              "layout": "horizontal",
-              "margin": "md",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "Taiwan",
-                  "size": "xs",
-                  "color": "#aaaaaa",
-                  "flex": 0
-                }
-              ]
-            }
-          ]
-        },
-        "styles": {
-          "footer": {
-            "separator": true
-          }
-        }
-      },
-      {
-        "type": "bubble",
-        "size": "micro",
-        "body": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": "全球病例",
-              "weight": "bold",
-              "size": "xl",
-              "margin": "md",
-              "color": "#0066CC"
-            },
-            {
-              "type": "separator",
-              "margin": "xs"
-            },
-            {
-              "type": "box",
-              "layout": "vertical",
-              "margin": "xxl",
-              "spacing": "sm",
-              "contents": [
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "確診",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end",
-                      "text": "CASES"
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "死亡",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "text": "DEATHS",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end"
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "horizontal",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "致死率",
-                      "size": "sm",
-                      "color": "#555555",
-                      "flex": 0
-                    },
-                    {
-                      "type": "text",
-                      "text": "CFR",
-                      "size": "sm",
-                      "color": "#111111",
-                      "align": "end"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "separator",
-              "margin": "lg"
-            },
-            {
-              "type": "box",
-              "layout": "horizontal",
-              "margin": "md",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "Countries",
-                  "size": "xs",
-                  "color": "#aaaaaa",
-                  "flex": 0
-                },
-                {
-                  "type": "text",
-                  "text": "COUNTRIES",
-                  "color": "#aaaaaa",
-                  "size": "xs",
-                  "align": "end"
-                }
-              ]
-            }
-          ]
-        },
-        "styles": {
-          "footer": {
-            "separator": true
-          }
-        }
-      }
-    ]
-  }`
-
 type GlabalCovid struct {
 	Num0 struct {
 		Cases     string `json:"cases"`
@@ -450,3 +99,369 @@ func PrepareFlexMesgForTaiwanInfo(flexMessage string, taiwanCovid *TaiwanCovid) 
 	flexMessage = strings.Replace(flexMessage, "DEATH", strconv.Itoa(taiwanCovid.Num0.Death), 1)
 	return flexMessage
 }
+
+const constFlexMessage string = `{
+	"type": "carousel",
+	"contents": [
+	  {
+		"type": "bubble",
+		"size": "micro",
+		"body": {
+		  "type": "box",
+		  "layout": "vertical",
+		  "contents": [
+			{
+			  "type": "text",
+			  "text": "昨日新增",
+			  "weight": "bold",
+			  "size": "xl",
+			  "margin": "md",
+			  "color": "#00BB00"
+			},
+			{
+			  "type": "separator",
+			  "margin": "xs"
+			},
+			{
+			  "type": "box",
+			  "layout": "vertical",
+			  "margin": "xxl",
+			  "spacing": "sm",
+			  "contents": [
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "確診",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "text": "LASTCASE",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end"
+					}
+				  ]
+				},
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "通報",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end",
+					  "text": "LASTINFORM"
+					}
+				  ]
+				},
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "排除",
+					  "size": "sm",
+					  "color": "#555555"
+					},
+					{
+					  "type": "text",
+					  "text": "LASTEXCEPT",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end"
+					}
+				  ]
+				}
+			  ]
+			},
+			{
+			  "type": "separator",
+			  "margin": "lg"
+			},
+			{
+			  "type": "box",
+			  "layout": "horizontal",
+			  "margin": "md",
+			  "contents": [
+				{
+				  "type": "text",
+				  "text": "Taiwan",
+				  "size": "xs",
+				  "color": "#aaaaaa",
+				  "flex": 0
+				}
+			  ]
+			}
+		  ]
+		},
+		"action": {
+		  "type": "uri",
+		  "label": "action",
+		  "uri": "https://www.cdc.gov.tw/"
+		},
+		"styles": {
+		  "footer": {
+			"separator": true
+		  }
+		}
+	  },
+	  {
+		"type": "bubble",
+		"size": "micro",
+		"body": {
+		  "type": "box",
+		  "layout": "vertical",
+		  "contents": [
+			{
+			  "type": "text",
+			  "text": "國內統計",
+			  "weight": "bold",
+			  "size": "xl",
+			  "margin": "md",
+			  "color": "#00AEAE"
+			},
+			{
+			  "type": "separator",
+			  "margin": "xs"
+			},
+			{
+			  "type": "box",
+			  "layout": "vertical",
+			  "margin": "xxl",
+			  "spacing": "sm",
+			  "contents": [
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "確診",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "text": "CASE",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end"
+					}
+				  ]
+				},
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "通報",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end",
+					  "text": "INFORM"
+					}
+				  ]
+				},
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "死亡",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "text": "DEATH",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end"
+					}
+				  ]
+				}
+			  ]
+			},
+			{
+			  "type": "separator",
+			  "margin": "lg"
+			},
+			{
+			  "type": "box",
+			  "layout": "horizontal",
+			  "margin": "md",
+			  "contents": [
+				{
+				  "type": "text",
+				  "text": "Taiwan",
+				  "size": "xs",
+				  "color": "#aaaaaa",
+				  "flex": 0
+				}
+			  ]
+			}
+		  ]
+		},
+		"action": {
+		  "type": "uri",
+		  "label": "action",
+		  "uri": "https://www.cdc.gov.tw/"
+		},
+		"styles": {
+		  "footer": {
+			"separator": true
+		  }
+		}
+	  },
+	  {
+		"type": "bubble",
+		"size": "micro",
+		"body": {
+		  "type": "box",
+		  "layout": "vertical",
+		  "contents": [
+			{
+			  "type": "text",
+			  "text": "全球病例",
+			  "weight": "bold",
+			  "size": "xl",
+			  "margin": "md",
+			  "color": "#0066CC"
+			},
+			{
+			  "type": "separator",
+			  "margin": "xs"
+			},
+			{
+			  "type": "box",
+			  "layout": "vertical",
+			  "margin": "xxl",
+			  "spacing": "sm",
+			  "contents": [
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "確診",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end",
+					  "text": "CASES"
+					}
+				  ]
+				},
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "死亡",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "text": "DEATHS",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end"
+					}
+				  ]
+				},
+				{
+				  "type": "box",
+				  "layout": "horizontal",
+				  "contents": [
+					{
+					  "type": "text",
+					  "text": "致死率",
+					  "size": "sm",
+					  "color": "#555555",
+					  "flex": 0
+					},
+					{
+					  "type": "text",
+					  "text": "CFR",
+					  "size": "sm",
+					  "color": "#111111",
+					  "align": "end"
+					}
+				  ]
+				}
+			  ]
+			},
+			{
+			  "type": "separator",
+			  "margin": "lg"
+			},
+			{
+			  "type": "box",
+			  "layout": "horizontal",
+			  "margin": "md",
+			  "contents": [
+				{
+				  "type": "text",
+				  "text": "Countries",
+				  "size": "xs",
+				  "color": "#aaaaaa",
+				  "flex": 0
+				},
+				{
+				  "type": "text",
+				  "text": "COUNTRIES",
+				  "color": "#aaaaaa",
+				  "size": "xs",
+				  "align": "end"
+				}
+			  ]
+			}
+		  ]
+		},
+		"action": {
+		  "type": "uri",
+		  "label": "action",
+		  "uri": "https://www.cdc.gov.tw/"
+		},
+		"styles": {
+		  "footer": {
+			"separator": true
+		  }
+		}
+	  }
+	]
+  }`
