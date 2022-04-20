@@ -442,11 +442,11 @@ func PrepareFlexMesgForGlobalInfo(flexMessage string, globalCovid *GlabalCovid) 
 }
 
 func PrepareFlexMesgForTaiwanInfo(flexMessage string, taiwanCovid *TaiwanCovid) string {
-	flexMessage = strings.Replace(flexMessage, "CASE", taiwanCovid.Num0.Case, 1)
-	flexMessage = strings.Replace(flexMessage, "INFORM", taiwanCovid.Num0.Inform, 1)
-	flexMessage = strings.Replace(flexMessage, "DEATH", strconv.Itoa(taiwanCovid.Num0.Death), 1)
 	flexMessage = strings.Replace(flexMessage, "LASTCASE", strconv.Itoa(taiwanCovid.Num0.LastCase), 1)
 	flexMessage = strings.Replace(flexMessage, "LASTINFORM", taiwanCovid.Num0.LastInform, 1)
 	flexMessage = strings.Replace(flexMessage, "LASTEXCEPT", taiwanCovid.Num0.LastExcept, 1)
+	flexMessage = strings.Replace(flexMessage, "CASE", taiwanCovid.Num0.Case, 1)
+	flexMessage = strings.Replace(flexMessage, "INFORM", taiwanCovid.Num0.Inform, 1)
+	flexMessage = strings.Replace(flexMessage, "DEATH", strconv.Itoa(taiwanCovid.Num0.Death), 1)
 	return flexMessage
 }
