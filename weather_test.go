@@ -3,9 +3,15 @@ package main
 import "testing"
 
 func TestFetchWeatherInfo(t *testing.T) {
-	if info, _ := FetchWeatherInfo("臺北市"); info != "" {
-		t.Log("FetchWeatherInfo PASS")
-	} else {
+	weatherResponse := new(WeatherResponse)
+
+	err := FetchWeatherInfo("臺北市", weatherResponse)
+	if err != nil {
 		t.Error("FetchWeatherInfo FAIL")
 	}
+
+	weather := ResolveWeatherResponse(weatherResponse)
+
+	GetWeatherMesg(weather)
+
 }

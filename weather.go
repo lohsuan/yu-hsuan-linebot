@@ -10,18 +10,6 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
-func FetchWeatherInfo(locationName string, target interface{}) error {
-	url := "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=" + os.Getenv("WeatherAuthorization") + "&locationName=" + locationName
-
-	response, err := http.Get(url)
-	if err != nil || response.StatusCode != 200 {
-		return err
-	}
-	defer response.Body.Close()
-
-	return json.NewDecoder(response.Body).Decode(target)
-}
-
 type Weather struct {
 	LocationName string `json:"locationName"`
 	State        string `json:"state"`
@@ -61,6 +49,18 @@ type WeatherResponse struct {
 	} `json:"records"`
 }
 
+func FetchWeatherInfo(locationName string, target interface{}) error {
+	url := "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=" + os.Getenv("WeatherAuthorization") + "&locationName=" + locationName
+
+	response, err := http.Get(url)
+	if err != nil || response.StatusCode != 200 {
+		return err
+	}
+	defer response.Body.Close()
+
+	return json.NewDecoder(response.Body).Decode(target)
+}
+
 func ResolveWeatherResponse(weatherResponse *WeatherResponse) Weather {
 	var weather Weather
 	weather.LocationName = weatherResponse.Records.Location[0].LocationName
@@ -76,11 +76,12 @@ func ResolveWeatherResponse(weatherResponse *WeatherResponse) Weather {
 }
 
 func GetWeatherMesg(weather Weather) *linebot.TextMessage {
-	message := fmt.Sprint("今天%s的天氣: %s\n", weather.LocationName, weather.State)
-	message += fmt.Sprint("溫度: %s°C - %s°C\n", weather.MinTemp, weather.MaxTemp)
-	message += fmt.Sprint("降雨機率: %s%\n", weather.RainProb)
-	message += fmt.Sprint("舒適度: %s\n", weather.Confort)
-	message += fmt.Sprint("時間: %s ~ %s\n", weather.StartTime[5:16], weather.EndTime[5:16])
+	message := fmt.Sprintln("【天氣小助理】")
+	message += fmt.Sprintln("今天", weather.LocationName, "的天氣: ", weather.State)
+	message += fmt.Sprintln("溫度: ", weather.MinTemp, "°C - ", weather.MaxTemp, "°C")
+	message += fmt.Sprintln("降雨機率: ", weather.RainProb, "%")
+	message += fmt.Sprintln("舒適度: ", weather.Confort)
+	message += fmt.Sprintln("時間: ", weather.StartTime[5:16], " ~ ", weather.EndTime[5:16])
 
 	if i, _ := strconv.Atoi(weather.RainProb); i > 70 {
 		message += "提醒您，降雨機率高，出門記得帶把傘唷！"
