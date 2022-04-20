@@ -67,12 +67,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 
 				case "weather", "今天天氣":
-					var locationName = ""
-					replyMsg := GetWeatherInfo(locationName)
+					var locationName = "臺北市"
+					replyMsg, replySticker := GetWeatherInfo(locationName)
 
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
+
+				// case "@":
 
 				case "joke", "來點冷笑話":
 					replyMsg := linebot.NewTextMessage("很高興認識你/妳！我是現在就讀北科大 電資學士班 大三的羅羽軒 Erin\n 下面是我的 github 連結，請多多指教！")
