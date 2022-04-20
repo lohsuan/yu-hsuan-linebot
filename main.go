@@ -57,7 +57,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if message.Text[0] == '@' {
 					var locationName = message.Text[1:]
 					if !locationSet.Contains(locationName) {
-						replyMsg := linebot.NewTextMessage("抱歉，資料庫不夠強大，請輸入下方可查詢地區")
+						replyMsg := linebot.NewTextMessage("抱歉，資料庫不夠強大，請輸入下方可查詢地區:(")
 						replyMsg2 := linebot.NewTextMessage("臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
 
 						if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
@@ -70,26 +70,31 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 							log.Print("err in linebot.TextMessage: ", err)
 						}
 					}
+				} else {
+					break
 				}
 
 				switch message.Text {
 				case "help":
-					replyMsg := linebot.NewTextMessage("回覆:\nauthor -> 認識我！\njoke -> 來點冷笑話\ncovid19 -> 關注今日確診人數\nweather -> 查詢台北市天氣\n@[地名]: 查詢其他地區天氣")
+					replyMsg := linebot.NewTextMessage("回覆:\nauthor: 認識我！\njoke: 來點冷笑話\ncovid19: 關注疫情動態\nweather: 查詢台北市天氣\n@[地名]: 查詢其他地區天氣")
 					replyMsg2 := linebot.NewTextMessage("可查詢地區: 臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
-				case "covid19", "今日確診人數":
-					replyMsg := linebot.NewTextMessage("很高興認識你/妳！我是現在就讀北科大 電資學士班 大三的羅羽軒 Erin\n 下面是我的 github 連結，請多多指教！")
-					replyLink := linebot.NewTextMessage("https://github.com/lohsuan")
+				case "covid19", "關注疫情動態":
+					replyMsg, err := GetCovidInfo()
+					if err != nil {
+						bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("資料發生錯誤，請稍後再試")).Do()
+						break
+					}
 
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyLink).Do(); err != nil {
+					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
-				case "weather", "今天天氣":
+				case "weather", "臺北市天氣":
 					var locationName = "臺北市"
 					replyMsg, replySticker := GetWeatherInfo(locationName)
 
@@ -114,7 +119,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 
 				default:
-					replyMsg := linebot.NewTextMessage("你的小助理上線啦，回覆 help 可檢視更多功能，祝你有美好的一天唷:)")
+					replyMsg := linebot.NewTextMessage("你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)")
 					stickerMsg := linebot.NewStickerMessage("2", "514")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
