@@ -67,40 +67,31 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				case help, userGuild:
 					replyMsg := GetHelpMesg()
 					replyMsg2 := GetHelpWeatherMesg()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do()
 
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
 				case quickReply:
 					replyMsg := GetQuickReplyMesg()
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+
 				case northern:
 					replyMsg := GetNorthernMesg()
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+
 				case central:
 					replyMsg := GetNorthernMesg()
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+
 				case southern:
 					replyMsg := GetSouthernlMesg()
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+
 				case eastern:
 					replyMsg := GetEasternlMesg()
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+
 				case outlying:
 					replyMsg := GetOutlyingMesg()
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case "covid19", "關注疫情動態":
 					sendr := linebot.NewSender("疾管署", "https://i.imgur.com/ZvY23Ag.png")
@@ -109,36 +100,20 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("資料發生錯誤，請稍後再試")).Do()
 						break
 					}
-
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg.WithSender(sendr)).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					bot.ReplyMessage(event.ReplyToken, replyMsg.WithSender(sendr)).Do()
 
 				case "weather", "臺北市天氣":
-					var locationName = "臺北市"
-					replyMsg, replySticker := GetWeatherInfo(locationName)
-					replySticker.WithQuickReplies(linebot.NewQuickReplyItems(
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("查詢其他地區", "快速查詢")),
-					))
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					replyMsg, replySticker := GetWeatherInfo("臺北市")
+					bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do()
 
 				case "author", "認識作者":
-					sendr := linebot.NewSender("羽軒 Erin", "https://stickershop.line-scdn.net/stickershop/v1/sticker/52002736/iPhone/sticker_key@2x.png")
-					replyMsg := linebot.NewTextMessage("Nice to meet you!$").WithSender(sendr).AddEmoji(linebot.NewEmoji(17, "5ac2213e040ab15980c9b447", "035"))
-					replyFlex := GetAuthorInfo().WithSender(sendr)
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					replyMsg := GetGreetingMesg()
+					replyFlex := GetAuthorFlex()
+					bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do()
 
 				default:
-					replyMsg := linebot.NewTextMessage("$你的小助理上線啦！\n回覆 help 可檢視更多功能，祝你有美好的一天:)").AddEmoji(linebot.NewEmoji(0, "5ac2213e040ab15980c9b447", "154"))
-					stickerMsg := linebot.NewStickerMessage("2", "514")
-
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
+					replyMsg, stickerMsg := GetDefaultMesg()
+					bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
 				}
 
 			case *linebot.StickerMessage:
@@ -147,14 +122,21 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 
 			default:
-				replyMsg := linebot.NewTextMessage("你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)")
-				stickerMsg := linebot.NewStickerMessage("2", "514")
+				replyMsg, stickerMsg := GetDefaultMesg()
+				bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
 
-				if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
-					log.Print("err in linebot.TextMessage: ", err)
-				}
-
+			}
+			if err != nil {
+				log.Print(err)
 			}
 		}
 	}
+}
+
+func GetDefaultMesg() (*linebot.TextMessage, *linebot.StickerMessage) {
+	const defaultMesg = "你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)"
+
+	replyMsg := linebot.NewTextMessage(defaultMesg)
+	stickerMsg := linebot.NewStickerMessage("2", "514")
+	return replyMsg, stickerMsg
 }

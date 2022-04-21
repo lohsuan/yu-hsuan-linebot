@@ -1,14 +1,27 @@
 package main
 
-import "github.com/line/line-bot-sdk-go/v7/linebot"
+import (
+	"log"
 
-func GetAuthorInfo() *linebot.FlexMessage {
+	"github.com/line/line-bot-sdk-go/v7/linebot"
+)
+
+const myPersonalInfo = "我的基本資料"
+const authorName = "羽軒 Erin"
+const sallyImageUrl = "https://stickershop.line-scdn.net/stickershop/v1/sticker/52002736/iPhone/sticker_key@2x.png"
+
+func GetAuthorFlex() linebot.SendingMessage {
+	sender := linebot.NewSender(authorName, sallyImageUrl)
 	container, err := linebot.UnmarshalFlexMessageJSON([]byte(personalInfoFlexMesg))
 	if err != nil {
-		panic(err)
+		log.Print(err)
 	}
+	return linebot.NewFlexMessage(myPersonalInfo, container).WithSender(sender)
+}
 
-	return linebot.NewFlexMessage("我的基本資料", container)
+func GetGreetingMesg() linebot.SendingMessage {
+	sender := linebot.NewSender(authorName, sallyImageUrl)
+	return linebot.NewTextMessage("Nice to meet you!$").WithSender(sender).AddEmoji(linebot.NewEmoji(17, "5ac2213e040ab15980c9b447", "035"))
 }
 
 const personalInfoFlexMesg string = `{

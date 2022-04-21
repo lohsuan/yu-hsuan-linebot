@@ -10,6 +10,9 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
+const searchOtherLocation = "查詢其他地區"
+const cwdOpendataUrl = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001"
+
 type Weather struct {
 	LocationName string `json:"locationName"`
 	State        string `json:"state"`
@@ -50,8 +53,7 @@ type WeatherResponse struct {
 }
 
 func FetchWeatherInfo(locationName string, target interface{}) error {
-	url := "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=" + os.Getenv("WeatherAuthorization") + "&locationName=" + locationName
-
+	url := cwdOpendataUrl + "?Authorization=" + os.Getenv("WeatherAuthorization") + "&locationName=" + locationName
 	response, err := http.Get(url)
 	if err != nil || response.StatusCode != 200 {
 		return err
@@ -96,19 +98,20 @@ func GetWeatherMesg(weather Weather) *linebot.TextMessage {
 	return linebot.NewTextMessage(message)
 }
 
-func GetWeatherSticker(weather Weather) *linebot.StickerMessage {
+func GetWeatherSticker(weather Weather) linebot.SendingMessage {
 	rainProb, _ := strconv.Atoi(weather.RainProb)
+	replyItems := linebot.NewQuickReplyItems(linebot.NewQuickReplyButton("", linebot.NewMessageAction(searchOtherLocation, quickReply)))
 
 	if rainProb > 70 {
-		return linebot.NewStickerMessage("789", "10893")
+		return linebot.NewStickerMessage("789", "10893").WithQuickReplies(replyItems)
 	} else if rainProb > 30 {
-		return linebot.NewStickerMessage("789", "10872")
+		return linebot.NewStickerMessage("789", "10872").WithQuickReplies(replyItems)
 	} else {
-		return linebot.NewStickerMessage("789", "10871")
+		return linebot.NewStickerMessage("789", "10871").WithQuickReplies(replyItems)
 	}
 }
 
-func GetWeatherInfo(locationName string) (*linebot.TextMessage, *linebot.StickerMessage) {
+func GetWeatherInfo(locationName string) (*linebot.TextMessage, linebot.SendingMessage) {
 	weatherResponse := new(WeatherResponse)
 
 	err := FetchWeatherInfo(locationName, weatherResponse)
