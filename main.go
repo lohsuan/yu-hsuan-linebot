@@ -17,6 +17,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	mapset "github.com/deckarep/golang-set"
 
@@ -75,9 +76,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 
-				switch message.Text {
+				switch strings.ToLower(message.Text) {
 				case "help", "使用手冊":
-					replyMsg := linebot.NewTextMessage("回覆:\nauthor: 認識我！\njoke: 來點冷笑話\ncovid19: 關注疫情動態\nweather: 查詢台北市天氣\n@[地名]: 查詢其他地區天氣")
+					replyMsg := linebot.NewTextMessage("回覆:\nauthor: 認識我！\ncovid19: 關注疫情動態\nweather: 查詢台北市天氣\n@[地名]: 查詢其他地區天氣")
 					replyMsg2 := linebot.NewTextMessage("可查詢地區: 臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
 					replyMsg2.WithQuickReplies(linebot.NewQuickReplyItems(
 						linebot.NewQuickReplyButton("", linebot.NewMessageAction("快速查詢", "快速查詢")),
@@ -175,18 +176,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
-				case "joke", "來點冷笑話":
-					replyMsg := linebot.NewTextMessage("很高興認識你/妳！我是現在就讀北科大 電資學士班 大三的羅羽軒 Erin\n 下面是我的 github 連結，請多多指教！")
-					replyLink := linebot.NewTextMessage("https://github.com/lohsuan")
-
-					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyLink).Do(); err != nil {
-						log.Print("err in linebot.TextMessage: ", err)
-					}
-
 				case "author", "認識作者":
-					replyMsg := linebot.NewTextMessage("初次見面，請多多指教！")
+					sendr := linebot.NewSender("羽軒 Erin", "https://stickershop.line-scdn.net/stickershop/v1/sticker/52002736/iPhone/sticker_key@2x.png")
+					replyMsg := linebot.NewTextMessage("Nice to meet you!$").WithSender(sendr).AddEmoji(linebot.NewEmoji(18, "5ac2213e040ab15980c9b447", "035"))
 					replyFlex := GetAuthorInfo()
-
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
@@ -203,6 +196,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			case *linebot.StickerMessage:
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewStickerMessage("2", "514")).Do(); err != nil {
 					log.Print("err in linebot.StickerMessage: ", err)
+				}
+
+			default:
+				replyMsg := linebot.NewTextMessage("你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)")
+				stickerMsg := linebot.NewStickerMessage("2", "514")
+
+				if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
+					log.Print("err in linebot.TextMessage: ", err)
 				}
 
 			}

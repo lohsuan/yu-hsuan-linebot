@@ -77,17 +77,20 @@ func ResolveWeatherResponse(weatherResponse *WeatherResponse) Weather {
 
 func GetWeatherMesg(weather Weather) *linebot.TextMessage {
 	message := fmt.Sprintln("【天氣小助理】")
-	message += fmt.Sprintln("今天" + weather.LocationName + "的天氣: " + weather.State)
+	message += fmt.Sprintln(weather.LocationName + "的天氣: " + weather.State)
 	message += fmt.Sprintln("溫度: " + weather.MinTemp + "°C - " + weather.MaxTemp + "°C")
 	message += fmt.Sprintln("降雨機率: " + weather.RainProb + "%")
 	message += fmt.Sprintln("舒適度: " + weather.Confort)
 	message += fmt.Sprint("時間: " + weather.StartTime[5:16] + "~" + weather.EndTime[5:16])
 
+	minTemp, _ := strconv.Atoi(weather.MaxTemp)
+	maxTemp, _ := strconv.Atoi(weather.MinTemp)
+
 	if i, _ := strconv.Atoi(weather.RainProb); i > 70 {
-		message += "\n提醒您，降雨機率高，出門記得帶把傘唷！"
-	} else if i, _ := strconv.Atoi(weather.MaxTemp); i > 27 {
-		message += "\n提醒您，今天有點熱，外出要小心中暑唷！"
-	} else if i, _ := strconv.Atoi(weather.MinTemp); i < 15 {
+		message += "\n提醒您，今天降雨機率高，出門記得帶把傘唷！"
+	} else if maxTemp-minTemp > 8 {
+		message += "\n提醒您，今天溫差較大，外出要小心著涼唷！"
+	} else if minTemp < 15 {
 		message += "\n提醒您，今天天氣偏涼，記得多穿一件外套唷！"
 	}
 	return linebot.NewTextMessage(message)
