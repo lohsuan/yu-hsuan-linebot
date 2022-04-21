@@ -59,26 +59,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					if !locationSet.Contains(locationName) {
 						replyMsg := linebot.NewTextMessage("查無此地區資料，請輸入或點選下方區域><")
 						replyMsg.WithQuickReplies(linebot.NewQuickReplyItems(
+							linebot.NewQuickReplyButton("", linebot.NewMessageAction("基隆市", "@基隆市")),
 							linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺北市", "@臺北市")),
 							linebot.NewQuickReplyButton("", linebot.NewMessageAction("新北市", "@新北市")),
 							linebot.NewQuickReplyButton("", linebot.NewMessageAction("桃園市", "@桃園市")),
+							linebot.NewQuickReplyButton("", linebot.NewMessageAction("宜蘭縣", "@宜蘭縣")),
+							linebot.NewQuickReplyButton("", linebot.NewMessageAction("苗栗縣", "@苗栗縣")),
 							linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺中市", "@臺中市")),
 							linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺南市", "@臺南市")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("高雄市", "@高雄市")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("基隆市", "@基隆市")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("新竹縣", "@新竹縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("新竹市", "@新竹市")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("苗栗縣", "@苗栗縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("彰化縣", "@彰化縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("南投縣", "@南投縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("雲林縣", "@雲林縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("嘉義縣", "@嘉義縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("嘉義市", "@嘉義市")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("屏東縣", "@屏東縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("宜蘭縣", "@宜蘭縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("花蓮縣", "@花蓮縣")),
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺東縣", "@臺東縣")),
-						))
+							linebot.NewQuickReplyButton("", linebot.NewMessageAction("高雄市", "@高雄市"))))
 						replyMsg2 := linebot.NewTextMessage("臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
 
 						if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
@@ -99,26 +88,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					replyMsg := linebot.NewTextMessage("回覆:\nauthor: 認識我！\njoke: 來點冷笑話\ncovid19: 關注疫情動態\nweather: 查詢台北市天氣\n@[地名]: 查詢其他地區天氣")
 					replyMsg2 := linebot.NewTextMessage("可查詢地區: 臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
 					replyMsg2.WithQuickReplies(linebot.NewQuickReplyItems(
+						linebot.NewQuickReplyButton("", linebot.NewMessageAction("基隆市", "@基隆市")),
 						linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺北市", "@臺北市")),
 						linebot.NewQuickReplyButton("", linebot.NewMessageAction("新北市", "@新北市")),
 						linebot.NewQuickReplyButton("", linebot.NewMessageAction("桃園市", "@桃園市")),
+						linebot.NewQuickReplyButton("", linebot.NewMessageAction("宜蘭縣", "@宜蘭縣")),
+						linebot.NewQuickReplyButton("", linebot.NewMessageAction("苗栗縣", "@苗栗縣")),
 						linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺中市", "@臺中市")),
 						linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺南市", "@臺南市")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("高雄市", "@高雄市")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("基隆市", "@基隆市")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("新竹縣", "@新竹縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("新竹市", "@新竹市")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("苗栗縣", "@苗栗縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("彰化縣", "@彰化縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("南投縣", "@南投縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("雲林縣", "@雲林縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("嘉義縣", "@嘉義縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("嘉義市", "@嘉義市")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("屏東縣", "@屏東縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("宜蘭縣", "@宜蘭縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("花蓮縣", "@花蓮縣")),
-						linebot.NewQuickReplyButton("", linebot.NewMessageAction("臺東縣", "@臺東縣")),
-					))
+						linebot.NewQuickReplyButton("", linebot.NewMessageAction("高雄市", "@高雄市"))))
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
