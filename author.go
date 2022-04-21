@@ -90,13 +90,7 @@ const personalInfoFlexMesg string = `{
 			}
 		  ]
 		}
-	  ],
-	  "background": {
-		"type": "linearGradient",
-		"angle": "0deg",
-		"startColor": "#E8FFF5",
-		"endColor": "#DFFFDF"
-	  }
+	  ]
 	},
 	"footer": {
 	  "type": "box",
@@ -122,12 +116,6 @@ const personalInfoFlexMesg string = `{
 			"uri": "https://github.com/lohsuan"
 		  }
 		}
-	  ],
-	  "background": {
-		"type": "linearGradient",
-		"angle": "0deg",
-		"startColor": "#D2E9FF",
-		"endColor": "#E8FFF5"
-	  }
+	  ]
 	}
   }`
