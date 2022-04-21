@@ -178,14 +178,14 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 				case "author", "認識作者":
 					sendr := linebot.NewSender("羽軒 Erin", "https://stickershop.line-scdn.net/stickershop/v1/sticker/52002736/iPhone/sticker_key@2x.png")
-					replyMsg := linebot.NewTextMessage("Nice to meet you!$").WithSender(sendr).AddEmoji(linebot.NewEmoji(18, "5ac2213e040ab15980c9b447", "035"))
+					replyMsg := linebot.NewTextMessage("Nice to meet you!$").WithSender(sendr).AddEmoji(linebot.NewEmoji(17, "5ac2213e040ab15980c9b447", "035"))
 					replyFlex := GetAuthorInfo()
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do(); err != nil {
 						log.Print("err in linebot.TextMessage: ", err)
 					}
 
 				default:
-					replyMsg := linebot.NewTextMessage("你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)")
+					replyMsg := linebot.NewTextMessage("你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)$").AddEmoji(linebot.NewEmoji(36, "5ac2213e040ab15980c9b447", "154"))
 					stickerMsg := linebot.NewStickerMessage("2", "514")
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do(); err != nil {
