@@ -71,59 +71,51 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 				case quickReply:
 					replyMsg := GetQuickReplyMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case northern:
 					replyMsg := GetNorthernMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case central:
 					replyMsg := GetNorthernMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case southern:
 					replyMsg := GetSouthernlMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case eastern:
 					replyMsg := GetEasternlMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case outlying:
 					replyMsg := GetOutlyingMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case "covid19", "關注疫情動態":
+				case covid19, covid19Info:
 					sendr := linebot.NewSender("疾管署", "https://i.imgur.com/ZvY23Ag.png")
-					replyMsg, err := GetCovidInfo()
-					if err != nil {
-						bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("資料發生錯誤，請稍後再試")).Do()
-						break
-					}
-					bot.ReplyMessage(event.ReplyToken, replyMsg.WithSender(sendr)).Do()
+					replyMsg := GetCovidInfo()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg.WithSender(sendr)).Do()
 
-				case "weather", "臺北市天氣":
+				case weather, taipeiWeather:
 					replyMsg, replySticker := GetWeatherInfo("臺北市")
-					bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do()
 
-				case "author", "認識作者":
-					replyMsg := GetGreetingMesg()
+				case author, aboutAuthor:
 					replyFlex := GetAuthorFlex()
-					bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do()
+					replyMsg := GetGreetingMesg()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do()
 
 				default:
 					replyMsg, stickerMsg := GetDefaultMesg()
-					bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
-				}
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
 
-			case *linebot.StickerMessage:
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewStickerMessage("2", "514")).Do(); err != nil {
-					log.Print("err in linebot.StickerMessage: ", err)
 				}
 
 			default:
 				replyMsg, stickerMsg := GetDefaultMesg()
-				bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
+				_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
 
 			}
 			if err != nil {

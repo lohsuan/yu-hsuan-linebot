@@ -10,6 +10,9 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
+const weather = "weather"
+const taipeiWeather = "臺北市天氣"
+
 const searchOtherLocation = "查詢其他地區"
 const cwdOpendataUrl = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001"
 

@@ -6,6 +6,9 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
+const author = "author"
+const aboutAuthor = "認識作者"
+
 const myPersonalInfo = "我的基本資料"
 const authorName = "羽軒 Erin"
 const sallyImageUrl = "https://stickershop.line-scdn.net/stickershop/v1/sticker/52002736/iPhone/sticker_key@2x.png"

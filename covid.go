@@ -10,8 +10,15 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
+const covid19 = "covid19"
+const covid19Info = "關注疫情動態"
+const errorFetchingDataMesg = "資料發生錯誤，請稍後再試"
+const globalCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash2"
+const taiwanCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash3"
+const covidInfoFlexAlt = "疫情概況一覽"
+
 type GlabalCovid struct {
-	Num0 struct {
+	Zero struct {
 		Cases     string `json:"cases"`
 		Deaths    string `json:"deaths"`
 		Cfr       string `json:"cfr"`
@@ -20,7 +27,7 @@ type GlabalCovid struct {
 }
 
 type TaiwanCovid struct {
-	Num0 struct {
+	Zero struct {
 		Case       string `json:"確診"`
 		Death      int    `json:"死亡"`
 		Inform     string `json:"送驗"`
@@ -32,7 +39,7 @@ type TaiwanCovid struct {
 }
 
 func FetchGlabalCovidInfo(target interface{}) error {
-	url := "https://covid19dashboard.cdc.gov.tw/dash2"
+	url := globalCovidUrl
 
 	response, err := http.Get(url)
 	if err != nil || response.StatusCode != 200 {
@@ -44,7 +51,7 @@ func FetchGlabalCovidInfo(target interface{}) error {
 }
 
 func FetchTaiwanCovidInfo(target interface{}) error {
-	url := "https://covid19dashboard.cdc.gov.tw/dash3"
+	url := taiwanCovidUrl
 
 	response, err := http.Get(url)
 	if err != nil || response.StatusCode != 200 {
@@ -55,48 +62,42 @@ func FetchTaiwanCovidInfo(target interface{}) error {
 	return json.NewDecoder(response.Body).Decode(target)
 }
 
-func GetCovidInfo() (*linebot.FlexMessage, error) {
+func GetCovidInfo() linebot.SendingMessage {
 	flexMessage := fmt.Sprint(constFlexMessage)
 
 	globalCovid := new(GlabalCovid)
-
 	err := FetchGlabalCovidInfo(globalCovid)
 	if err != nil {
-		return nil, err
+		return linebot.NewTextMessage(errorFetchingDataMesg)
 	}
 	flexMessage = PrepareFlexMesgForGlobalInfo(flexMessage, globalCovid)
 
 	taiwanCovid := new(TaiwanCovid)
-
 	err = FetchTaiwanCovidInfo(taiwanCovid)
 	if err != nil {
-		return nil, err
+		return linebot.NewTextMessage(errorFetchingDataMesg)
 	}
 	flexMessage = PrepareFlexMesgForTaiwanInfo(flexMessage, taiwanCovid)
 
-	container, err := linebot.UnmarshalFlexMessageJSON([]byte(flexMessage))
-	if err != nil {
-		panic(err)
-	}
-
-	return linebot.NewFlexMessage("疫情概況一覽", container), nil
+	container, _ := linebot.UnmarshalFlexMessageJSON([]byte(flexMessage))
+	return linebot.NewFlexMessage(covidInfoFlexAlt, container)
 }
 
 func PrepareFlexMesgForGlobalInfo(flexMessage string, globalCovid *GlabalCovid) string {
-	flexMessage = strings.Replace(flexMessage, "CASES", globalCovid.Num0.Cases, 1)
-	flexMessage = strings.Replace(flexMessage, "DEATHS", globalCovid.Num0.Deaths, 1)
-	flexMessage = strings.Replace(flexMessage, "CFR", globalCovid.Num0.Cfr, 1)
-	flexMessage = strings.Replace(flexMessage, "COUNTRIES", strconv.Itoa(globalCovid.Num0.Countries), 1)
+	flexMessage = strings.Replace(flexMessage, "CASES", globalCovid.Zero.Cases, 1)
+	flexMessage = strings.Replace(flexMessage, "DEATHS", globalCovid.Zero.Deaths, 1)
+	flexMessage = strings.Replace(flexMessage, "CFR", globalCovid.Zero.Cfr, 1)
+	flexMessage = strings.Replace(flexMessage, "COUNTRIES", strconv.Itoa(globalCovid.Zero.Countries), 1)
 	return flexMessage
 }
 
 func PrepareFlexMesgForTaiwanInfo(flexMessage string, taiwanCovid *TaiwanCovid) string {
-	flexMessage = strings.Replace(flexMessage, "LASTCASE", strconv.Itoa(taiwanCovid.Num0.LastCase), 1)
-	flexMessage = strings.Replace(flexMessage, "LASTINFORM", taiwanCovid.Num0.LastInform, 1)
-	flexMessage = strings.Replace(flexMessage, "LASTEXCEPT", taiwanCovid.Num0.LastExcept, 1)
-	flexMessage = strings.Replace(flexMessage, "CASE", taiwanCovid.Num0.Case, 1)
-	flexMessage = strings.Replace(flexMessage, "INFORM", taiwanCovid.Num0.Inform, 1)
-	flexMessage = strings.Replace(flexMessage, "DEATH", strconv.Itoa(taiwanCovid.Num0.Death), 1)
+	flexMessage = strings.Replace(flexMessage, "LASTCASE", strconv.Itoa(taiwanCovid.Zero.LastCase), 1)
+	flexMessage = strings.Replace(flexMessage, "LASTINFORM", taiwanCovid.Zero.LastInform, 1)
+	flexMessage = strings.Replace(flexMessage, "LASTEXCEPT", taiwanCovid.Zero.LastExcept, 1)
+	flexMessage = strings.Replace(flexMessage, "CASE", taiwanCovid.Zero.Case, 1)
+	flexMessage = strings.Replace(flexMessage, "INFORM", taiwanCovid.Zero.Inform, 1)
+	flexMessage = strings.Replace(flexMessage, "DEATH", strconv.Itoa(taiwanCovid.Zero.Death), 1)
 	return flexMessage
 }
 
