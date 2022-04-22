@@ -1,6 +1,9 @@
 package main
 
-import "github.com/line/line-bot-sdk-go/v7/linebot"
+import (
+	mapset "github.com/deckarep/golang-set"
+	"github.com/line/line-bot-sdk-go/v7/linebot"
+)
 
 const (
 	northern       = "北部"
@@ -48,7 +51,13 @@ const (
 	LianjiangCounty = "連江縣"
 )
 
-func GetQuickReplyMesg() linebot.SendingMessage {
+const availableWeatherLocation = "臺北市, 新北市, 桃園市, " +
+	"臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, " +
+	"雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣"
+
+const locationNotAvailableMsg = "查無此地區資料，請輸入以下地區或點選快速查詢><"
+
+func GetQuickReplyMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(northern, northern)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(central, central)),
@@ -59,7 +68,7 @@ func GetQuickReplyMesg() linebot.SendingMessage {
 	return linebot.NewTextMessage(chooseLocation).WithQuickReplies(quickReplyItems)
 }
 
-func GetNorthernMesg() linebot.SendingMessage {
+func GetNorthernMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(KeelungCity, "@"+KeelungCity)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(TaipeiCity, "@"+TaipeiCity)),
@@ -71,7 +80,7 @@ func GetNorthernMesg() linebot.SendingMessage {
 	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
 }
 
-func GetSouthernlMesg() linebot.SendingMessage {
+func GetSouthernlMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(ChiayiCity, "@"+ChiayiCity)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(ChiayiCounty, "@"+ChiayiCounty)),
@@ -82,7 +91,7 @@ func GetSouthernlMesg() linebot.SendingMessage {
 	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
 }
 
-func GetEasternlMesg() linebot.SendingMessage {
+func GetEasternlMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(HualienCounty, "@"+HualienCounty)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(TaitungCounty, "@"+TaitungCounty)),
@@ -90,11 +99,26 @@ func GetEasternlMesg() linebot.SendingMessage {
 	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
 }
 
-func GetOutlyingMesg() linebot.SendingMessage {
+func GetOutlyingMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(PenghuCounty, "@"+PenghuCounty)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(KinmenCounty, "@"+KinmenCounty)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(LianjiangCounty, "@"+LianjiangCounty)),
 	)
 	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+}
+
+func GetOtherLocationWeather(locationName string) (linebot.SendingMessage, linebot.SendingMessage) {
+	locationSet := mapset.NewSet(KeelungCity, TaipeiCity, NewTaipeiCity, YilanCounty, TaoyuanCity, HsinchuCity, MiaoliCounty, TaichungCity, ChanghuaCounty, YunlinCounty, NantouCounty, ChiayiCity, ChiayiCounty, TainanCity, KaohsiungCity, PingtungCounty, HualienCounty, TaitungCounty, PenghuCounty, KinmenCounty, LianjiangCounty)
+
+	if !locationSet.Contains(locationName) {
+		locationNotAvailable := linebot.NewTextMessage(locationNotAvailableMsg)
+		quickReplyItems := linebot.NewQuickReplyItems(
+			linebot.NewQuickReplyButton("", linebot.NewMessageAction(quickReply, quickReply)),
+		)
+		availableLocation := linebot.NewTextMessage(availableWeatherLocation).WithQuickReplies(quickReplyItems)
+		return locationNotAvailable, availableLocation
+	} else {
+		return GetWeatherInfo(locationName)
+	}
 }

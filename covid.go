@@ -12,10 +12,12 @@ import (
 
 const covid19 = "covid19"
 const covid19Info = "關注疫情動態"
-const errorFetchingDataMesg = "資料發生錯誤，請稍後再試"
+const errorFetchingDataMsg = "資料發生錯誤，請稍後再試"
 const globalCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash2"
 const taiwanCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash3"
 const covidInfoFlexAlt = "疫情概況一覽"
+const cdc = "疾管署"
+const cdcIconUrl = "https://i.imgur.com/ZvY23Ag.png"
 
 type GlabalCovid struct {
 	Zero struct {
@@ -63,27 +65,28 @@ func FetchTaiwanCovidInfo(target interface{}) error {
 }
 
 func GetCovidInfo() linebot.SendingMessage {
+	sendr := linebot.NewSender(cdc, cdcIconUrl)
 	flexMessage := fmt.Sprint(constFlexMessage)
 
 	globalCovid := new(GlabalCovid)
 	err := FetchGlabalCovidInfo(globalCovid)
 	if err != nil {
-		return linebot.NewTextMessage(errorFetchingDataMesg)
+		return linebot.NewTextMessage(errorFetchingDataMsg)
 	}
-	flexMessage = PrepareFlexMesgForGlobalInfo(flexMessage, globalCovid)
+	flexMessage = PrepareFlexMsgForGlobalInfo(flexMessage, globalCovid)
 
 	taiwanCovid := new(TaiwanCovid)
 	err = FetchTaiwanCovidInfo(taiwanCovid)
 	if err != nil {
-		return linebot.NewTextMessage(errorFetchingDataMesg)
+		return linebot.NewTextMessage(errorFetchingDataMsg)
 	}
-	flexMessage = PrepareFlexMesgForTaiwanInfo(flexMessage, taiwanCovid)
+	flexMessage = PrepareFlexMsgForTaiwanInfo(flexMessage, taiwanCovid)
 
 	container, _ := linebot.UnmarshalFlexMessageJSON([]byte(flexMessage))
-	return linebot.NewFlexMessage(covidInfoFlexAlt, container)
+	return linebot.NewFlexMessage(covidInfoFlexAlt, container).WithSender(sendr)
 }
 
-func PrepareFlexMesgForGlobalInfo(flexMessage string, globalCovid *GlabalCovid) string {
+func PrepareFlexMsgForGlobalInfo(flexMessage string, globalCovid *GlabalCovid) string {
 	flexMessage = strings.Replace(flexMessage, "CASES", globalCovid.Zero.Cases, 1)
 	flexMessage = strings.Replace(flexMessage, "DEATHS", globalCovid.Zero.Deaths, 1)
 	flexMessage = strings.Replace(flexMessage, "CFR", globalCovid.Zero.Cfr, 1)
@@ -91,7 +94,7 @@ func PrepareFlexMesgForGlobalInfo(flexMessage string, globalCovid *GlabalCovid) 
 	return flexMessage
 }
 
-func PrepareFlexMesgForTaiwanInfo(flexMessage string, taiwanCovid *TaiwanCovid) string {
+func PrepareFlexMsgForTaiwanInfo(flexMessage string, taiwanCovid *TaiwanCovid) string {
 	flexMessage = strings.Replace(flexMessage, "LASTCASE", strconv.Itoa(taiwanCovid.Zero.LastCase), 1)
 	flexMessage = strings.Replace(flexMessage, "LASTINFORM", taiwanCovid.Zero.LastInform, 1)
 	flexMessage = strings.Replace(flexMessage, "LASTEXCEPT", taiwanCovid.Zero.LastExcept, 1)

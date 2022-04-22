@@ -12,6 +12,6 @@ func TestFetchWeatherInfo(t *testing.T) {
 
 	weather := ResolveWeatherResponse(weatherResponse)
 
-	GetWeatherMesg(weather)
+	GetWeatherMsg(weather)
 
 }

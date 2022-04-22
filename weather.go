@@ -80,7 +80,7 @@ func ResolveWeatherResponse(weatherResponse *WeatherResponse) Weather {
 	return weather
 }
 
-func GetWeatherMesg(weather Weather) *linebot.TextMessage {
+func GetWeatherMsg(weather Weather) *linebot.TextMessage {
 	message := fmt.Sprintln("【天氣小助理】")
 	message += fmt.Sprintln(weather.LocationName + "的天氣: " + weather.State)
 	message += fmt.Sprintln("溫度: " + weather.MinTemp + "°C - " + weather.MaxTemp + "°C")
@@ -124,5 +124,5 @@ func GetWeatherInfo(locationName string) (*linebot.TextMessage, linebot.SendingM
 
 	weather := ResolveWeatherResponse(weatherResponse)
 
-	return GetWeatherMesg(weather), GetWeatherSticker(weather)
+	return GetWeatherMsg(weather), GetWeatherSticker(weather)
 }

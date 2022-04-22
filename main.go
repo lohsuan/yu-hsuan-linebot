@@ -7,8 +7,6 @@ import (
 	"os"
 	"strings"
 
-	mapset "github.com/deckarep/golang-set"
-
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
@@ -35,86 +33,68 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	locationSet := mapset.NewSet("臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市", "基隆市", "新竹縣", "新竹市", "苗栗縣", "彰化縣", "南投縣", "雲林縣", "嘉義縣", "嘉義市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣")
-
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 
 				if message.Text[0] == '@' {
-					var locationName = message.Text[1:]
-					if !locationSet.Contains(locationName) {
-						replyMsg := linebot.NewTextMessage("查無此地區資料，請輸入或點選快速查詢><")
-						replyMsg2 := linebot.NewTextMessage("臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 基隆市, 新竹縣, 新竹市, 苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 嘉義市, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣, 澎湖縣, 金門縣, 連江縣")
-						replyMsg2.WithQuickReplies(linebot.NewQuickReplyItems(
-							linebot.NewQuickReplyButton("", linebot.NewMessageAction("快速查詢", "快速查詢")),
-						))
-						if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do(); err != nil {
-							log.Print("err in linebot.TextMessage: ", err)
-						}
-					} else {
-						replyMsg, replySticker := GetWeatherInfo(locationName)
-
-						if _, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do(); err != nil {
-							log.Print("err in linebot.TextMessage: ", err)
-						}
-					}
+					replyMsg, replyMsg2 := GetOtherLocationWeather(message.Text[1:])
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do()
 					break
 				}
 
 				switch strings.ToLower(message.Text) {
 				case help, userGuild:
-					replyMsg := GetHelpMesg()
-					replyMsg2 := GetHelpWeatherMesg()
+					replyMsg := GetHelpMsg()
+					replyMsg2 := GetHelpWeatherMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do()
 
 				case quickReply:
-					replyMsg := GetQuickReplyMesg()
+					replyMsg := GetQuickReplyMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case northern:
-					replyMsg := GetNorthernMesg()
+					replyMsg := GetNorthernMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case central:
-					replyMsg := GetNorthernMesg()
+					replyMsg := GetNorthernMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case southern:
-					replyMsg := GetSouthernlMesg()
+					replyMsg := GetSouthernlMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case eastern:
-					replyMsg := GetEasternlMesg()
+					replyMsg := GetEasternlMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case outlying:
-					replyMsg := GetOutlyingMesg()
+					replyMsg := GetOutlyingMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case covid19, covid19Info:
-					sendr := linebot.NewSender("疾管署", "https://i.imgur.com/ZvY23Ag.png")
 					replyMsg := GetCovidInfo()
-					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg.WithSender(sendr)).Do()
+					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case weather, taipeiWeather:
-					replyMsg, replySticker := GetWeatherInfo("臺北市")
+					replyMsg, replySticker := GetWeatherInfo(TaipeiCity)
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do()
 
 				case author, aboutAuthor:
 					replyFlex := GetAuthorFlex()
-					replyMsg := GetGreetingMesg()
+					replyMsg := GetGreetingMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do()
 
 				default:
-					replyMsg, stickerMsg := GetDefaultMesg()
+					replyMsg, stickerMsg := GetDefaultMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
 
 				}
 
 			default:
-				replyMsg, stickerMsg := GetDefaultMesg()
+				replyMsg, stickerMsg := GetDefaultMsg()
 				_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, stickerMsg).Do()
 
 			}
@@ -125,10 +105,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetDefaultMesg() (*linebot.TextMessage, *linebot.StickerMessage) {
-	const defaultMesg = "你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)"
-
-	replyMsg := linebot.NewTextMessage(defaultMesg)
+func GetDefaultMsg() (*linebot.TextMessage, *linebot.StickerMessage) {
+	const defaultMsg = "你的小助理上線啦！回覆 help 可檢視更多功能，祝你有美好的一天:)"
+	replyMsg := linebot.NewTextMessage(defaultMsg)
 	stickerMsg := linebot.NewStickerMessage("2", "514")
 	return replyMsg, stickerMsg
 }

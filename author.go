@@ -15,19 +15,19 @@ const sallyImageUrl = "https://stickershop.line-scdn.net/stickershop/v1/sticker/
 
 func GetAuthorFlex() linebot.SendingMessage {
 	sender := linebot.NewSender(authorName, sallyImageUrl)
-	container, err := linebot.UnmarshalFlexMessageJSON([]byte(personalInfoFlexMesg))
+	container, err := linebot.UnmarshalFlexMessageJSON([]byte(personalInfoFlexMsg))
 	if err != nil {
 		log.Print(err)
 	}
 	return linebot.NewFlexMessage(myPersonalInfo, container).WithSender(sender)
 }
 
-func GetGreetingMesg() linebot.SendingMessage {
+func GetGreetingMsg() linebot.SendingMessage {
 	sender := linebot.NewSender(authorName, sallyImageUrl)
 	return linebot.NewTextMessage("Nice to meet you!$").WithSender(sender).AddEmoji(linebot.NewEmoji(17, "5ac2213e040ab15980c9b447", "035"))
 }
 
-const personalInfoFlexMesg string = `{
+const personalInfoFlexMsg string = `{
 	"type": "bubble",
 	"size": "kilo",
 	"hero": {
