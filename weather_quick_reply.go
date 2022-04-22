@@ -80,6 +80,17 @@ func GetNorthernMsg() linebot.SendingMessage {
 	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
 }
 
+func GetCentralMsg() linebot.SendingMessage {
+	quickReplyItems := linebot.NewQuickReplyItems(
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(MiaoliCounty, "@"+MiaoliCounty)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(TaichungCity, "@"+TaichungCity)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(ChanghuaCounty, "@"+ChanghuaCounty)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(YunlinCounty, "@"+YunlinCounty)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(NantouCounty, "@"+NantouCounty)),
+	)
+	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+}
+
 func GetSouthernlMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(ChiayiCity, "@"+ChiayiCity)),

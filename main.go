@@ -59,7 +59,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case central:
-					replyMsg := GetNorthernMsg()
+					replyMsg := GetCentralMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
 				case southern:
