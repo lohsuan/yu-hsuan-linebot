@@ -3,26 +3,25 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"log"
 	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFetchWeatherInfo(t *testing.T) {
+	t.Skip()
 	weatherResponse := new(WeatherResponse)
 
 	err := FetchWeatherInfo("臺北市", weatherResponse)
 	if err != nil || weatherResponse.Success != "true" {
 		t.Error("FetchWeatherInfo FAIL")
 	}
-
-	log.Println("weatherResponse: ", weatherResponse)
 }
 
 func TestResolveWeatherResponse(t *testing.T) {
 	weatherResponse := new(WeatherResponse)
 	json.NewDecoder(bytes.NewReader([]byte(standardWeatherResponse))).Decode(weatherResponse)
-	
+
 	weather := ResolveWeatherResponse(weatherResponse)
 
 	assert.Equal(t, weather.LocationName, "臺北市")
@@ -222,4 +221,4 @@ const standardWeatherResponse string = `{
 		}
 	  ]
 	}
-  }` 
+  }`
