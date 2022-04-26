@@ -31,3 +31,27 @@ type WeatherResponse struct {
 	} `json:"records"`
 }
 
+// 疾管署 covid19 資料擷取API
+const globalCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash2"
+const taiwanCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash3"
+
+type GlabalCovid struct {
+	Zero struct {
+		Cases     string `json:"cases"`
+		Deaths    string `json:"deaths"`
+		Cfr       string `json:"cfr"`
+		Countries int    `json:"countries"`
+	} `json:"0"`
+}
+
+type TaiwanCovid struct {
+	Zero struct {
+		Case       string `json:"確診"`
+		Death      int    `json:"死亡"`
+		Inform     string `json:"送驗"`
+		Except     string `json:"排除"`
+		LastCase   int    `json:"昨日確診"`
+		LastExcept string `json:"昨日排除"`
+		LastInform string `json:"昨日送驗"`
+	} `json:"0"`
+}

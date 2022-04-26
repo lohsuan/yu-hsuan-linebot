@@ -10,35 +10,15 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
-const covid19 = "covid19"
-const covid19Info = "關注疫情動態"
+const (
+	covid19     = "covid19"
+	covid19Info = "關注疫情動態"
+)
+
 const errorFetchingDataMsg = "資料發生錯誤，請稍後再試"
-const globalCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash2"
-const taiwanCovidUrl = "https://covid19dashboard.cdc.gov.tw/dash3"
 const covidInfoFlexAlt = "疫情概況一覽"
 const cdc = "疾管署"
 const cdcIconUrl = "https://i.imgur.com/ZvY23Ag.png"
-
-type GlabalCovid struct {
-	Zero struct {
-		Cases     string `json:"cases"`
-		Deaths    string `json:"deaths"`
-		Cfr       string `json:"cfr"`
-		Countries int    `json:"countries"`
-	} `json:"0"`
-}
-
-type TaiwanCovid struct {
-	Zero struct {
-		Case       string `json:"確診"`
-		Death      int    `json:"死亡"`
-		Inform     string `json:"送驗"`
-		Except     string `json:"排除"`
-		LastCase   int    `json:"昨日確診"`
-		LastExcept string `json:"昨日排除"`
-		LastInform string `json:"昨日送驗"`
-	} `json:"0"`
-}
 
 func FetchGlabalCovidInfo(target interface{}) error {
 	url := globalCovidUrl

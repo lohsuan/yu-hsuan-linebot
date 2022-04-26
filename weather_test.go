@@ -3,13 +3,16 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFetchWeatherInfo(t *testing.T) {
-	t.Skip()
+	if os.Getenv("CI") == "true" {
+		t.Skip()
+	}
 	weatherResponse := new(WeatherResponse)
 
 	err := FetchWeatherInfo("臺北市", weatherResponse)
