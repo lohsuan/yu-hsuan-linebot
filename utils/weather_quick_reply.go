@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	mapset "github.com/deckarep/golang-set"
@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	northern       = "北部"
-	central        = "中部"
-	southern       = "南部"
-	eastern        = "東部"
-	outlying       = "離島"
-	chooseLocation = "選擇地區"
-	choosePlace    = "選擇縣市"
+	Northern       = "北部"
+	Central        = "中部"
+	Southern       = "南部"
+	Eastern        = "東部"
+	Outlying       = "離島"
+	ChooseLocation = "選擇地區"
+	ChoosePlace    = "選擇縣市"
 )
 
 const (
@@ -59,13 +59,13 @@ const locationNotAvailableMsg = "查無此地區資料，請輸入以下地區�
 
 func GetQuickReplyMsg() linebot.SendingMessage {
 	quickReplyItems := linebot.NewQuickReplyItems(
-		linebot.NewQuickReplyButton("", linebot.NewMessageAction(northern, northern)),
-		linebot.NewQuickReplyButton("", linebot.NewMessageAction(central, central)),
-		linebot.NewQuickReplyButton("", linebot.NewMessageAction(southern, southern)),
-		linebot.NewQuickReplyButton("", linebot.NewMessageAction(eastern, eastern)),
-		linebot.NewQuickReplyButton("", linebot.NewMessageAction(outlying, outlying)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(Northern, Northern)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(Central, Central)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(Southern, Southern)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(Eastern, Eastern)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(Outlying, Outlying)),
 	)
-	return linebot.NewTextMessage(chooseLocation).WithQuickReplies(quickReplyItems)
+	return linebot.NewTextMessage(ChooseLocation).WithQuickReplies(quickReplyItems)
 }
 
 func GetNorthernMsg() linebot.SendingMessage {
@@ -77,7 +77,7 @@ func GetNorthernMsg() linebot.SendingMessage {
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(TaoyuanCity, "@"+TaoyuanCity)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(HsinchuCity, "@"+HsinchuCity)),
 	)
-	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+	return linebot.NewTextMessage(ChoosePlace).WithQuickReplies(quickReplyItems)
 }
 
 func GetCentralMsg() linebot.SendingMessage {
@@ -88,7 +88,7 @@ func GetCentralMsg() linebot.SendingMessage {
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(YunlinCounty, "@"+YunlinCounty)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(NantouCounty, "@"+NantouCounty)),
 	)
-	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+	return linebot.NewTextMessage(ChoosePlace).WithQuickReplies(quickReplyItems)
 }
 
 func GetSouthernlMsg() linebot.SendingMessage {
@@ -99,7 +99,7 @@ func GetSouthernlMsg() linebot.SendingMessage {
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(KaohsiungCity, "@"+KaohsiungCity)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(PingtungCounty, "@"+PingtungCounty)),
 	)
-	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+	return linebot.NewTextMessage(ChoosePlace).WithQuickReplies(quickReplyItems)
 }
 
 func GetEasternlMsg() linebot.SendingMessage {
@@ -107,7 +107,7 @@ func GetEasternlMsg() linebot.SendingMessage {
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(HualienCounty, "@"+HualienCounty)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(TaitungCounty, "@"+TaitungCounty)),
 	)
-	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+	return linebot.NewTextMessage(ChoosePlace).WithQuickReplies(quickReplyItems)
 }
 
 func GetOutlyingMsg() linebot.SendingMessage {
@@ -116,7 +116,7 @@ func GetOutlyingMsg() linebot.SendingMessage {
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(KinmenCounty, "@"+KinmenCounty)),
 		linebot.NewQuickReplyButton("", linebot.NewMessageAction(LianjiangCounty, "@"+LianjiangCounty)),
 	)
-	return linebot.NewTextMessage(choosePlace).WithQuickReplies(quickReplyItems)
+	return linebot.NewTextMessage(ChoosePlace).WithQuickReplies(quickReplyItems)
 }
 
 func GetOtherLocationWeather(locationName string) (linebot.SendingMessage, linebot.SendingMessage) {
@@ -125,7 +125,7 @@ func GetOtherLocationWeather(locationName string) (linebot.SendingMessage, lineb
 	if !locationSet.Contains(locationName) {
 		locationNotAvailable := linebot.NewTextMessage(locationNotAvailableMsg)
 		quickReplyItems := linebot.NewQuickReplyItems(
-			linebot.NewQuickReplyButton("", linebot.NewMessageAction(quickReply, quickReply)),
+			linebot.NewQuickReplyButton("", linebot.NewMessageAction(QuickReply, QuickReply)),
 		)
 		availableLocation := linebot.NewTextMessage(availableWeatherLocation).WithQuickReplies(quickReplyItems)
 		return locationNotAvailable, availableLocation

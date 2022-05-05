@@ -1,10 +1,11 @@
-package main
+package utils
 
 import "github.com/line/line-bot-sdk-go/v7/linebot"
 
 const (
-	help      = "help"
-	userGuild = "使用手冊"
+	Help       = "help"
+	UserGuild  = "使用手冊"
+	QuickReply = "快速查詢"
 )
 
 const helpMsg = "回覆:\n" +
@@ -15,14 +16,12 @@ const helpMsg = "回覆:\n" +
 
 const locationHint = "可查詢地區: "
 
-const quickReply = "快速查詢"
-
 func GetHelpMsg() *linebot.TextMessage {
 	return linebot.NewTextMessage(helpMsg)
 }
 
 func GetHelpWeatherMsg() linebot.SendingMessage {
 	return linebot.NewTextMessage(locationHint + availableWeatherLocation).WithQuickReplies(linebot.NewQuickReplyItems(
-		linebot.NewQuickReplyButton("", linebot.NewMessageAction(quickReply, quickReply)),
+		linebot.NewQuickReplyButton("", linebot.NewMessageAction(QuickReply, QuickReply)),
 	))
 }

@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/json"
@@ -10,8 +10,8 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
-const weather = "weather"
-const taipeiWeather = "臺北市天氣"
+const WeatherText = "weather"
+const TaipeiWeather = "臺北市天氣"
 const searchOtherLocation = "查詢其他地區"
 
 type Weather struct {
@@ -73,7 +73,7 @@ func GetWeatherMsg(weather Weather) *linebot.TextMessage {
 
 func GetWeatherSticker(weather Weather) linebot.SendingMessage {
 	rainProb, _ := strconv.Atoi(weather.RainProb)
-	replyItems := linebot.NewQuickReplyItems(linebot.NewQuickReplyButton("", linebot.NewMessageAction(searchOtherLocation, quickReply)))
+	replyItems := linebot.NewQuickReplyItems(linebot.NewQuickReplyButton("", linebot.NewMessageAction(searchOtherLocation, QuickReply)))
 
 	if rainProb > 70 {
 		return linebot.NewStickerMessage("789", "10893").WithQuickReplies(replyItems)

@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/json"
@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	covid19     = "covid19"
-	covid19Info = "關注疫情動態"
+	Covid19     = "covid19"
+	Covid19Info = "關注疫情動態"
 )
 
 const errorFetchingDataMsg = "資料發生錯誤，請稍後再試"

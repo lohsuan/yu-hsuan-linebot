@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"yu-hsuan-linebot/utils"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -39,52 +40,52 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			case *linebot.TextMessage:
 
 				if message.Text[0] == '@' {
-					replyMsg, replyMsg2 := GetOtherLocationWeather(message.Text[1:])
+					replyMsg, replyMsg2 := utils.GetOtherLocationWeather(message.Text[1:])
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do()
 					break
 				}
 
 				switch strings.ToLower(message.Text) {
-				case help, userGuild:
-					replyMsg := GetHelpMsg()
-					replyMsg2 := GetHelpWeatherMsg()
+				case utils.Help, utils.UserGuild:
+					replyMsg := utils.GetHelpMsg()
+					replyMsg2 := utils.GetHelpWeatherMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replyMsg2).Do()
 
-				case quickReply:
-					replyMsg := GetQuickReplyMsg()
+				case utils.QuickReply:
+					replyMsg := utils.GetQuickReplyMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case northern:
-					replyMsg := GetNorthernMsg()
+				case utils.Northern:
+					replyMsg := utils.GetNorthernMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case central:
-					replyMsg := GetCentralMsg()
+				case utils.Central:
+					replyMsg := utils.GetCentralMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case southern:
-					replyMsg := GetSouthernlMsg()
+				case utils.Southern:
+					replyMsg := utils.GetSouthernlMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case eastern:
-					replyMsg := GetEasternlMsg()
+				case utils.Eastern:
+					replyMsg := utils.GetEasternlMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case outlying:
-					replyMsg := GetOutlyingMsg()
+				case utils.Outlying:
+					replyMsg := utils.GetOutlyingMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case covid19, covid19Info:
-					replyMsg := GetCovidInfo()
+				case utils.Covid19, utils.Covid19Info:
+					replyMsg := utils.GetCovidInfo()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg).Do()
 
-				case weather, taipeiWeather:
-					replyMsg, replySticker := GetWeatherInfo(TaipeiCity)
+				case utils.WeatherText, utils.TaipeiWeather:
+					replyMsg, replySticker := utils.GetWeatherInfo(utils.TaipeiCity)
 					_, err = bot.ReplyMessage(event.ReplyToken, replyMsg, replySticker).Do()
 
-				case author, aboutAuthor:
-					replyFlex := GetAuthorFlex()
-					replyMsg := GetGreetingMsg()
+				case utils.Author, utils.AboutAuthor:
+					replyFlex := utils.GetAuthorFlex()
+					replyMsg := utils.GetGreetingMsg()
 					_, err = bot.ReplyMessage(event.ReplyToken, replyFlex, replyMsg).Do()
 
 				default:
